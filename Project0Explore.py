@@ -12,29 +12,23 @@ class Explore:
     def __init__(self):
         test = 0
 
-    # def startExplore(self,savNum):
-    #     sav = savNum
-    #     with open(f"Saves\{sav}\Locations.json","r") as locJson:
-    #         locJ = json.load(locJson)
-    #         print(locJ)
-
     def startExplore(self,savNum):
         sav = savNum
         with open(f"Saves\{sav}\Locations.json","r") as locJson:
             locJ = json.load(locJson)
-            #print(locJ)
+
         return locJ
 
     #Runs the room exploration loop
     #Returning 0 means the player quit out, return -1 means a gameover
     def explore(self, loc, sav):
-        #print(loc.type)
+
         while True:
             with open(f"Saves\{sav}\Progress.json","r") as Json:
                 prog = json.load(Json)
             pLoc = prog.get("playerLoc")
             print(loc[pLoc]["desc"])
-            #if loc[pLoc]["enemy"] != 0:
+
             if pLoc not in prog or prog[pLoc]["enemy"] != 0: 
                 dirStr = ""
                 for direction in loc[pLoc]["conn"]:
@@ -85,17 +79,11 @@ class Explore:
                             json.dump(prog,Json,indent=4)  
                 else:
                     print("Invalid Input")
-                #while True:
-                #    print(loc[pLoc])
             else:
                 #0=battle lost, 1=battle won
                 #Get the current party from progress.json and turn the string into a list of keys to battleStart, 
                 # which it can use to reference Player.json
-                #players = prog["party"].split(',')
-                #[int(element) for element in players]
-                #print(prog[pLoc]["enemy"])
                 print("You encountered enemies!")
-                #print(loc[pLoc]["enemy"])
                 result = self.bat.battleStart(sav,loc[pLoc]["enemy"],prog["party"])
                 if result == 1: #A result of 1 means the player won
 
@@ -110,6 +98,9 @@ class Explore:
                     with open(f"Saves\{sav}\Progress.json","w") as Json:
                         json.dump(prog,Json,indent=4)  
 
-                else: #If the result was not one, the player lost and gets sent to the title screen
+                else: #If the result was not one, the player lost, so they are moved to the previous room and get sent to the title screen 
+                    prog["playerLoc"] = prog["prevLoc"]
+                    with open(f"Saves\{sav}\Progress.json","w") as Json:
+                        json.dump(prog,Json,indent=4)  
                     print("You lost!")
                     return -1

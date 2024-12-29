@@ -7,7 +7,6 @@ explo = Explore()
 
 class Controller:
     def control(self):
-        #print("test")
         while True:
             sav = intro.title()
             loc = explo.startExplore(sav)

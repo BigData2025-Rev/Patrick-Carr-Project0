@@ -145,8 +145,6 @@ class Battle:
         print(dataStr)
         result = self.selectCommand(sav,E,P,index,comms)
             
-
-        #print("playerTurn function done with result=" + str(result))
         return E, P, result
 
     #Return number 0: enemy was defeated, 1: player was defeated, 2: default
@@ -169,8 +167,6 @@ class Battle:
         spellStr = ""
         spellList = [] #List of commands that go in the spell menu
         spells = False
-        #print(commList)
-        #print(comms)
         i = 0
         for element in commList:
             if spells == False:
@@ -206,7 +202,6 @@ class Battle:
                                 print("Not enough MP")
                                 continue
                             act = actS #The inputted spell is valid, so set is as the player's action
-                            #P[index]["mp"] -= comms[actS]["cost"] #Subtract the cost from the player's mp
                             break
                         else: #No valid spell command was inputted
                             print("Invalid Spell")
@@ -225,7 +220,6 @@ class Battle:
     #If the returned number is -1 the command was canceled, 0: enemy was defeated, 1: player was defeated, 2: standard
     def executeCommand(self, act, E, P, userParty, userIndex, comms):
         #Check if the user is a player to get targetting input
-        #comms[act][""]
         result = 2
         result, validIndexes = self.buildTargeting(E, P, userParty, userIndex, comms[act]["target"],comms[act]["formula"])
         if len(validIndexes) < 1:
@@ -264,23 +258,17 @@ class Battle:
                     E, P, defeat = self.executeDamage(act, E, P, userIndex, comms, targetList)
                 if defeat:#Set result to one if the command defeated a player to check for a gameover
                     result = 1
-        elif comms[act]["range"] == "two":
-            #print("TWO")
-            #if comms[act]["target"] == "enemy":           
+        elif comms[act]["range"] == "two":       
             targetList = []
             if userParty == 1:
                 tNum = 0
-                #print(str(tNum))
-                #print(str(len(targetList)))
-                while tNum < 2 and len(validIndexes) > 0: # and tNum<len(targetList)
-                    #print("TWOLOOP")
+                while tNum < 2 and len(validIndexes) > 0:
                     act2 = input("Select a target: " + result + " or [Q]uit back")
                     act2 = act2.upper()
                     if act2 == "Q":
                         result = -1
                         return E, P, result
-                    #print("act2=" + act2)
-                    #print(validIndexes)
+
                     if act2 in validIndexes:
                         targetList.append(act2)
                         validIndexes.remove(act2)#Two targetting cannot hit the same target twice
@@ -298,7 +286,7 @@ class Battle:
 
                     else: 
                         print("Invalid Target")
-                #userParty, targetParty = executeDamage()
+
                 if comms[act]["target"] == "allyHeal" or comms[act]["target"] == "ally":
                     P, P, defeat = self.executeDamage(act, P, P, userIndex, comms, targetList)
                 else:
@@ -324,7 +312,7 @@ class Battle:
         U[userIndex]["mp"] -= comms[act]["cost"] #Subtract the cost from the player's mp
         print(U[userIndex]["name"] + " used " + comms[act]["name"])
         for targetIndexStr in targetList:
-            #print("damageTest")
+
             targetIndex = int(targetIndexStr)
             if comms[act]["formula"] == "phys":
                 damage = U[userIndex]["str"] + comms[act]["power"] - T[targetIndex]["def"]
@@ -336,13 +324,10 @@ class Battle:
                 damage = (U[userIndex]["mag"] + comms[act]["power"])
                 print(T[targetIndex]["name"] + " gained " + str(damage) + " HP" )
                 damage = damage  * (-1) #Make the damage negative so the healing raises the target's hp
-            #print("Target hp Test 0:" + str(T[targetIndex]["hp"]))
+
             T[targetIndex]["hp"] -= damage
-            #print("Target hp Test 1:" + str(T[targetIndex]["hp"]))
             T[targetIndex]["hp"] = max(0,T[targetIndex]["hp"]) #ensure hp doesn't go below zero
-            #print("Target hp Test 2:" + str(T[targetIndex]["hp"]))
             T[targetIndex]["hp"] = min(T[targetIndex]["mhp"],T[targetIndex]["hp"]) #ensure hp doesn't go above max hp
-            #print("Target hp Test 3:" + str(T[targetIndex]["hp"]))
             if T[targetIndex]["hp"] == 0:
                 print(T[targetIndex]["name"] + " was defeated!")
                 defeat = True
@@ -352,7 +337,6 @@ class Battle:
     def defeatCheck(self,P):
         for battler in P:
             # if at least one of the party's battlers has positive hp, then they aren't defeated
-            #print("Battler hp=" + str(battler["hp"]))
             if battler["hp"] > 0: 
                 return False
         #None of the party's battlers have positive hp, so they are defeated
@@ -374,7 +358,6 @@ class Battle:
             else:
                 while index < len(P):
                     if P[index]["hp"] > 0:
-                        #result += f"{index} for {P[index]["name"]}, "
                         validIndexes.append(str(index)) 
                     index += 1               
                 
@@ -389,7 +372,6 @@ class Battle:
             else:
                 while index < len(E):
                     if P[index]["hp"] < E[index]["mhp"] or target != "allyHeal":
-                        #result += f"{index} for {E[index]["name"]}, "
                         validIndexes.append(str(index))   
                     index += 1 
 

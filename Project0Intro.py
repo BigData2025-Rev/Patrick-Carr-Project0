@@ -42,7 +42,6 @@ class Intro:
                 for r, dirs, f in os.walk("Saves\\"):
                     dir = dirs
                     break
-                #print(dir)
                 act = input(f"[Q] to return to title or input one of the following save names:{dir}")
                 
                 if act == "Q":
@@ -65,28 +64,18 @@ class Intro:
         #Check if the saves directory exists, if not make it
         if not os.path.exists("Saves\\"):
             os.mkdir("Saves")
-        #dir = os.listdir("Saves\\")
-        #dir = os.walk().next()[1]
         dir = 0
         for r, dirs, f in os.walk("Saves\\"):
             dir = dirs.__len__()
             break
-        #print(dir)
         folderNum = dir
-        # folderNum = 0
-        # for element in dir:
-        #     if os.path.isdir(element):
-        #         folderNum += 1
         return folderNum
 
 
     def newGame(self):
         savesNum = self.numberOfSaves()
-        #sav = savesNum + 1
         sav = 1
         loc = locat.initLoc()
-        #print(loc)
-        #locJ = json.dumps(loc, indent=4)
 
         #Create save folder named the next available number
         while os.path.exists(f"Saves\{sav}"):
@@ -95,7 +84,6 @@ class Intro:
 
         #Initialize the jsons
         with open(f"Saves\{sav}\Locations.json","w") as locJson:
-            #locJson.write("test")
             json.dump(loc,locJson,indent=4)
 
         prog = locat.initProg()
@@ -116,16 +104,5 @@ class Intro:
         
         print(f"Save {sav} was created")
         return sav
-
-    # def newGame(self):
-    #     loc = locat.initLoc()
-    #     print(loc)
-        
-        
-    #     with open("Locations.json","w") as locJson:
-    #         locJson.write("test")
-    #         #json.dump(loc,locJson,indent=4)
-
-    #     return 1
 
         
